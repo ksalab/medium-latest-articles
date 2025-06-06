@@ -6,11 +6,11 @@
       "destination": "/server.js"
     },
     {
-      "source": "/:username/:articleIndex",
+      "source": "/medium/:username/:articleIndex",
       "destination": "index.html"
     },
     {
-      "source": "/:username",
+      "source": "/medium/:username",
       "destination": "index.html"
     },
     {

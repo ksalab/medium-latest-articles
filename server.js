@@ -4,8 +4,8 @@ const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Serve static files from the public directory
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve static files from the root directory
+app.use(express.static(path.join(__dirname)));
 
 // Utility function to extract image URL from description
 const extractImageUrl = (description) => {
@@ -34,7 +34,8 @@ app.get('/medium/:username/:articleIndex/markdown', async (req, res) => {
         : '';
       const image = extractImageUrl(article.description);
       markdown += `### [${article.title}](${article.link})\n`;
-      // Omit images to avoid CORS issues in README.md
+      // Comment out image to avoid CORS issues
+      // if (image) markdown += `![${article.title}](${image})\n`;
       markdown += `**Published**: ${new Date(article.pubDate).toLocaleDateString()}\n`;
       if (tags) markdown += `**Tags**: ${tags}\n`;
       markdown += `${article.description.replace(/<[^>]+>/g, '').slice(0, 150)}...\n\n`;
@@ -48,7 +49,7 @@ app.get('/medium/:username/:articleIndex/markdown', async (req, res) => {
 });
 
 // Serve React app for other routes
-app.get('*', (req, res) => {
+app.get('*', (res, req) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
