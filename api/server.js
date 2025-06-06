@@ -37,10 +37,10 @@ app.get('/', async (req, res, next) => {
         markdown += `${article.description.replace(/[\r\n]+/g, ' ').replace(/<[^>]+>/g, '').slice(0, 150)}...\n\n`;
       });
 
-      res.set('Content-Type', 'text/markdown');
+      res.set('Content-Type', 'text/plain; charset=utf-8');
       res.send(markdown);
     } catch (error) {
-      res.status(500).send('Error fetching articles: ' + error.message);
+      res.status(500).set('Content-Type', 'text/plain').send(`Error fetching articles: ${error.message}`);
     }
   } else {
     next(); // Pass to next handler (Vercel will serve index.html)

@@ -1,18 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/:path*",
-      "has": [
-        {
-          "type": "query",
-          "key": "markdown",
-          "value": "true"
-        }
-      ],
+      "source": "/(.*&)?markdown=true(&.*)?",
       "destination": "/api/server.js"
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
