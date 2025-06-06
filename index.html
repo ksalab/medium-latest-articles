@@ -8,8 +8,152 @@
   <script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios@1.6.2/dist/axios.min.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    :root {
+      /* Light theme (GitHub-inspired) */
+      --background: #ffffff;
+      --card-background: #f6f8fa;
+      --text-primary: #24292e;
+      --text-secondary: #586069;
+      --tag-background: #e1e4e8;
+      --tag-text: #24292e;
+      --link-color: #0366d6;
+      --shadow: 0 1px 3px rgba(27, 31, 35, 0.12);
+    }
+
+    @media (prefers-color-scheme: dark) {
+
+      /* Dark theme (GitHub-inspired) */
+      :root {
+        --background: #0d1117;
+        --card-background: #161b22;
+        --text-primary: #c9d1d9;
+        --text-secondary: #8b949e;
+        --tag-background: #21262d;
+        --tag-text: #c9d1d9;
+        --link-color: #58a6ff;
+        --shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+      }
+    }
+
+    body {
+      background-color: var(--background);
+      color: var(--text-primary);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: 600;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+
+    .loading,
+    .error,
+    .no-articles {
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .error {
+      color: #cb2431;
+    }
+
+    .article-card {
+      background-color: var(--card-background);
+      border-radius: 6px;
+      box-shadow: var(--shadow);
+      padding: 16px;
+      margin: 16px 0;
+    }
+
+    .article-card.horizontal {
+      display: flex;
+    }
+
+    .article-card.vertical {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .article-image {
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .article-image.horizontal {
+      width: 200px;
+      height: 120px;
+      margin-right: 16px;
+    }
+
+    .article-image.vertical {
+      width: 100%;
+      height: 180px;
+      margin-bottom: 16px;
+    }
+
+    .article-content {
+      flex: 1;
+    }
+
+    .article-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 8px;
+    }
+
+    .article-title a {
+      color: var(--link-color);
+      text-decoration: none;
+    }
+
+    .article-title a:hover {
+      text-decoration: underline;
+    }
+
+    .article-date {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin: 0 0 8px;
+    }
+
+    .article-description {
+      color: var(--text-primary);
+      font-size: 14px;
+      margin: 0 0 8px;
+    }
+
+    .article-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      background-color: var(--tag-background);
+      color: var(--tag-text);
+      font-size: 12px;
+      padding: 4px 8px;
+      border-radius: 12px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 16px;
+    }
+  </style>
 </head>
 
 <body>
@@ -17,16 +161,24 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
+    // Utility function to extract image URL from description
+    const extractImageUrl = (description) => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(description, 'text/html');
+      const img = doc.querySelector('img');
+      return img ? img.src : null;
+    };
+
     const App = () => {
       const [articles, setArticles] = useState([]);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
 
-      // Parsing parameters from URL
+      // Parse URL parameters
       const params = window.location.pathname.split('/').filter(Boolean);
-      const username = params[1] || 'medium'; // Default
-      const articleIndex = parseInt(params[2]) || 1; // Default 1
-      const articleFormat = params[3] || 'horizontal'; // Default horizontal
+      const username = params[1] || 'ksalab'; // Default username
+      const articleIndex = parseInt(params[2]) || 1; // Default to 1 article
+      const articleFormat = params[3] || 'horizontal'; // Default to horizontal
 
       useEffect(() => {
         const fetchArticles = async () => {
@@ -35,10 +187,13 @@
             const response = await axios.get(
               `https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@${username}`
             );
-            const fetchedArticles = response.data.items.slice(0, articleIndex);
+            const fetchedArticles = response.data.items.slice(0, articleIndex).map(article => ({
+              ...article,
+              image: extractImageUrl(article.description) || article.thumbnail
+            }));
             setArticles(fetchedArticles);
           } catch (err) {
-            setError('Error loading articles. Check your username or try again later.');
+            setError('Error fetching articles. Please check the username or try again later.');
           } finally {
             setLoading(false);
           }
@@ -49,34 +204,41 @@
       const ArticleCard = ({ article, format }) => {
         const isHorizontal = format === 'horizontal';
         return (
-          <div className={`p-4 m-4 bg-white rounded-lg shadow-md ${isHorizontal ? 'flex' : 'flex flex-col'}`}>
-            {article.thumbnail && (
+          <div className={`article-card ${format}`}>
+            {article.image && (
               <img
-                src={article.thumbnail}
+                src={article.image}
                 alt={article.title}
-                className={`object-cover ${isHorizontal ? 'w-1/3 h-40 mr-4' : 'w-full h-48 mb-4'} rounded`}
+                className={`article-image ${format}`}
               />
             )}
-            <div className="flex-1">
-              <h2 className="text-xl font-bold mb-2">
+            <div className="article-content">
+              <h2 className="article-title">
                 <a href={article.link} target="_blank" rel="noopener noreferrer">{article.title}</a>
               </h2>
-              <p className="text-gray-600 mb-2">{new Date(article.pubDate).toLocaleDateString()}</p>
-              <p className="text-gray-700">{article.description.replace(/<[^>]+>/g, '').slice(0, 150)}...</p>
+              <p className="article-date">{new Date(article.pubDate).toLocaleDateString()}</p>
+              <p className="article-description">{article.description.replace(/<[^>]+>/g, '').slice(0, 150)}...</p>
+              {article.categories && article.categories.length > 0 && (
+                <div className="article-tags">
+                  {article.categories.map((tag, index) => (
+                    <span key={index} className="tag">{tag}</span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );
       };
 
       return (
-        <div className="container mx-auto p-4">
-          <h1 className="text-3xl font-bold text-center mb-6">Latest Medium Articles for @{username}</h1>
-          {loading && <p className="text-center">Loading...</p>}
-          {error && <p className="text-center text-red-500">{error}</p>}
+        <div className="container">
+          <h1 className="title">Medium Articles for @{username}</h1>
+          {loading && <p className="loading">Loading...</p>}
+          {error && <p className="error">{error}</p>}
           {articles.length === 0 && !loading && !error && (
-            <p className="text-center">Articles not found.</p>
+            <p className="no-articles">No articles found.</p>
           )}
-          <div className={articleFormat === 'horizontal' ? 'flex flex-col' : 'grid grid-cols-1 md:grid-cols-2 gap-4'}>
+          <div className={articleFormat === 'horizontal' ? '' : 'grid'}>
             {articles.map((article, index) => (
               <ArticleCard key={index} article={article} format={articleFormat} />
             ))}
