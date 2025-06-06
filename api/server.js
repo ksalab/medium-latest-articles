@@ -11,7 +11,7 @@ const extractImageUrl = (description) => {
 };
 
 // API endpoint to generate Markdown content
-app.get('/', async (req, res) => {
+app.get('/', async (req, res, next) => {
   const { user = 'ksalab', count = '1', markdown = 'false' } = req.query;
   const articleCount = parseInt(count) || 1;
 
@@ -32,18 +32,18 @@ app.get('/', async (req, res) => {
         markdown += `### [${article.title}](${article.link})\n`;
         // Comment out image to avoid CORS issues
         // if (image) markdown += `![${article.title}](${image})\n`;
-        markdown += `**Published**: ${new Date(article.pubDate).toLocaleDateString()}\n`;
+        markdown += `**Published**: ${new Date(article.pubDate).toDateString()}\n`;
         if (tags) markdown += `**Tags**: ${tags}\n`;
-        markdown += `${article.description.replace(/<[^>]+>/g, '').slice(0, 150)}...\n\n`;
+        markdown += `${article.description.replace(/[\r\n]+/g, ' ').replace(/<[^>]+>/g, '').slice(0, 150)}...\n\n`;
       });
 
       res.set('Content-Type', 'text/markdown');
       res.send(markdown);
     } catch (error) {
-      res.status(500).send('Error fetching articles');
+      res.status(500).send('Error fetching markdown');
     }
   } else {
-    res.status(400).send('Markdown not requested');
+    next(); // Pass to next handler (Vercel will serve index.html)
   }
 });
 

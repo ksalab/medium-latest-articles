@@ -1,18 +1,12 @@
 {
-  "framework": null,
   "rewrites": [
     {
       "source": "/(.*)?markdown=true(.*)",
-      "destination": "/api/server"
+      "destination": "/api/server.js"
     },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "functions": {
-    "api/server.js": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }
