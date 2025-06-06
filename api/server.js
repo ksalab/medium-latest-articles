@@ -43,8 +43,7 @@ app.get('/', async (req, res) => {
       res.status(500).send('Error fetching articles');
     }
   } else {
-    // Redirect to index.html for non-markdown requests
-    res.redirect('/index.html');
+    res.status(400).send('Markdown not requested');
   }
 });
 

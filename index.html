@@ -177,7 +177,7 @@
       // Parse query parameters
       const params = new URLSearchParams(window.location.search);
       const username = params.get('user') || 'ksalab'; // Default username
-      const articleIndex = parseInt(params.get('count')) || 1; // Default to 1 article
+      const articleIndex = parseInt(params.get('count')) || 1; // Default to 1
       const articleFormat = params.get('format') || 'horizontal'; // Default to horizontal
 
       useEffect(() => {
