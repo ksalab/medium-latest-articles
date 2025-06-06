@@ -2,20 +2,13 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/medium/:username/:articleIndex/markdown",
-      "destination": "/server.js"
-    },
-    {
-      "source": "/medium/:username/:articleIndex",
-      "destination": "index.html"
-    },
-    {
-      "source": "/medium/:username",
-      "destination": "index.html"
-    },
-    {
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "/api/server": {
+      "runtime": "nodejs18.x"
+    }
+  }
 }

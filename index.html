@@ -174,11 +174,11 @@
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
 
-      // Parse URL parameters
-      const params = window.location.pathname.split('/').filter(Boolean);
-      const username = params[1] || 'ksalab'; // Default username
-      const articleIndex = parseInt(params[2]) || 1; // Default to 1 article
-      const articleFormat = params[3] || 'horizontal'; // Default to horizontal
+      // Parse query parameters
+      const params = new URLSearchParams(window.location.search);
+      const username = params.get('user') || 'ksalab'; // Default username
+      const articleIndex = parseInt(params.get('count')) || 1; // Default to 1 article
+      const articleFormat = params.get('format') || 'horizontal'; // Default to horizontal
 
       useEffect(() => {
         const fetchArticles = async () => {
