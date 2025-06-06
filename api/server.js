@@ -40,7 +40,7 @@ app.get('/', async (req, res, next) => {
       res.set('Content-Type', 'text/markdown');
       res.send(markdown);
     } catch (error) {
-      res.status(500).send('Error fetching markdown');
+      res.status(500).send('Error fetching articles: ' + error.message);
     }
   } else {
     next(); // Pass to next handler (Vercel will serve index.html)
