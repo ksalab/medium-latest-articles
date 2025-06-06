@@ -176,9 +176,9 @@
 
       // Parse URL parameters
       const params = window.location.pathname.split('/').filter(Boolean);
-      const username = params[0] || 'medium'; // Default username
-      const articleIndex = parseInt(params[1]) || 1; // Default to 1 article
-      const articleFormat = params[2] || 'horizontal'; // Default to horizontal
+      const username = params[1] || 'ksalab'; // Default username
+      const articleIndex = parseInt(params[2]) || 1; // Default to 1 article
+      const articleFormat = params[3] || 'horizontal'; // Default to horizontal
 
       useEffect(() => {
         const fetchArticles = async () => {

@@ -16,7 +16,7 @@ const extractImageUrl = (description) => {
 };
 
 // API endpoint to generate Markdown content
-app.get('/:username/:articleIndex/markdown', async (req, res) => {
+app.get('/medium/:username/:articleIndex/markdown', async (req, res) => {
   const { username, articleIndex } = req.params;
   const articleCount = parseInt(articleIndex) || 1;
 
@@ -34,7 +34,7 @@ app.get('/:username/:articleIndex/markdown', async (req, res) => {
         : '';
       const image = extractImageUrl(article.description);
       markdown += `### [${article.title}](${article.link})\n`;
-      if (image) markdown += `![${article.title}](${image})\n`;
+      // Omit images to avoid CORS issues in README.md
       markdown += `**Published**: ${new Date(article.pubDate).toLocaleDateString()}\n`;
       if (tags) markdown += `**Tags**: ${tags}\n`;
       markdown += `${article.description.replace(/<[^>]+>/g, '').slice(0, 150)}...\n\n`;

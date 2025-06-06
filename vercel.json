@@ -2,16 +2,8 @@
   "framework": null,
   "rewrites": [
     {
-      "source": "/:username/:articleIndex/markdown",
+      "source": "/medium/:username/:articleIndex/markdown",
       "destination": "/server.js"
-    },
-    {
-      "source": "/:username/:articleIndex",
-      "destination": "/public/index.html"
-    },
-    {
-      "source": "/:username",
-      "destination": "/public/index.html"
     },
     {
       "source": "/(.*)",
