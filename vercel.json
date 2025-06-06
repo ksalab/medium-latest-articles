@@ -7,7 +7,7 @@
     }
   ],
   "functions": {
-    "/api/server": {
+    "./api/server": {
       "runtime": "nodejs18.x"
     }
   }
