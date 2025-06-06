@@ -16,7 +16,7 @@ const extractImageUrl = (description) => {
 };
 
 // API endpoint to generate Markdown content
-app.get('/medium/:username/:articleIndex/markdown', async (req, res) => {
+app.get('/:username/:articleIndex/markdown', async (req, res) => {
   const { username, articleIndex } = req.params;
   const articleCount = parseInt(articleIndex) || 1;
 
