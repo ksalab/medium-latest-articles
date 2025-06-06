@@ -2,8 +2,12 @@
   "framework": null,
   "rewrites": [
     {
+      "source": "/medium/:username/:articleIndex/markdown",
+      "destination": "/server.js"
+    },
+    {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": "/public/index.html"
     }
   ]
 }
