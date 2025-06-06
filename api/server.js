@@ -11,11 +11,11 @@ const extractImageUrl = (description) => {
 };
 
 // API endpoint to generate Markdown content
-app.get(['/', '/api/markdown'], async (req, res, next) => {
+app.get(['/', '/markdown'], async (req, res, next) => {
   const { user = 'ksalab', count = '1', markdown = 'false' } = req.query;
   const articleCount = parseInt(count) || 1;
 
-  if (markdown === 'true' || req.path === '/api/markdown') {
+  if (markdown === 'true' || req.path === '/markdown') {
     try {
       const response = await axios.get(
         `https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@${user}`
@@ -47,4 +47,4 @@ app.get(['/', '/api/markdown'], async (req, res, next) => {
   }
 });
 
-export default app;
+module.exports = app;

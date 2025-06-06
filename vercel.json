@@ -5,18 +5,18 @@
       "destination": "/api/server.js"
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
+      "destination": "/api/server.js",
       "has": [
         {
           "type": "query",
           "key": "markdown",
           "value": "true"
         }
-      ],
-      "destination": "/api/server.js"
+      ]
     },
     {
-      "source": "/:path*",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
