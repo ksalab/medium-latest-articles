@@ -1,6 +1,4 @@
-const express = require('express');
 const axios = require('axios');
-const app = express();
 
 // Utility function to extract image URL from description
 const extractImageUrl = (description) => {
@@ -10,12 +8,12 @@ const extractImageUrl = (description) => {
   return img ? img.src : null;
 };
 
-// API endpoint to generate Markdown content
-app.get(['/', '/markdown'], async (req, res, next) => {
-  const { user = 'ksalab', count = '1', markdown = 'false' } = req.query;
+// Handler for /markdown endpoint
+export default async function handler(req, res) {
+  const { user = 'ksalab', count = '1', markdown = 'true' } = req.query;
   const articleCount = parseInt(count) || 1;
 
-  if (markdown === 'true' || req.path === '/markdown') {
+  if (markdown === 'true') {
     try {
       const response = await axios.get(
         `https://api.rss2json.com/v1/api.json?rss_url=https://medium.com/feed/@${user}`
@@ -37,14 +35,14 @@ app.get(['/', '/markdown'], async (req, res, next) => {
         markdown += `${article.description.replace(/[\r\n]+/g, ' ').replace(/<[^>]+>/g, '').slice(0, 150)}...\n\n`;
       });
 
-      res.set('Content-Type', 'text/plain; charset=utf-8');
-      res.send(markdown);
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.status(200).send(markdown);
     } catch (error) {
-      res.status(500).set('Content-Type', 'text/plain').send(`Error fetching articles: ${error.message}`);
+      res.setHeader('Content-Type', 'text/plain');
+      res.status(500).send(`Error fetching articles: ${error.message}`);
     }
   } else {
-    next(); // Pass to next handler (Vercel will serve index.html)
+    res.setHeader('Content-Type', 'text/plain');
+    res.status(400).send('Markdown parameter required');
   }
-});
-
-module.exports = app;
+}

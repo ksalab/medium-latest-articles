@@ -1,19 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/api/markdown",
-      "destination": "/api/server.js"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "/api/server.js",
-      "has": [
-        {
-          "type": "query",
-          "key": "markdown",
-          "value": "true"
-        }
-      ]
+      "source": "/markdown",
+      "destination": "/api/markdown.js"
     },
     {
       "source": "/(.*)",
