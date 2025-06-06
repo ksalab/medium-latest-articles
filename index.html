@@ -24,7 +24,7 @@
 
       // Parsing parameters from URL
       const params = window.location.pathname.split('/').filter(Boolean);
-      const username = params[1] || ''; // Default
+      const username = params[1] || 'medium'; // Default
       const articleIndex = parseInt(params[2]) || 1; // Default 1
       const articleFormat = params[3] || 'horizontal'; // Default horizontal
 
