@@ -49,7 +49,7 @@ app.get('/medium/:username/:articleIndex/markdown', async (req, res) => {
 
 // Serve React app for other routes
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(port, () => {
